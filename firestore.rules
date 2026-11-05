@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'demi8lade@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidThread(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.connectedNumber in ['WAWCD', 'telegramBot'] &&
+             data.clientNumber is string && data.clientNumber.size() <= 128 &&
+             data.responseSettings is bool;
+    }
+
+    function isValidMessage(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.chatId is string && data.chatId.size() <= 128 &&
+             data.direction in ['incoming', 'outgoing'] &&
+             data.message is string && data.message.size() <= 10000;
+    }
+
+    function isValidLog(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.method is string && data.method.size() <= 16 &&
+             data.path is string && data.path.size() <= 256;
+    }
+
+    // Active candidate chat threads
+    match /chat_threads/{threadId} {
+      allow read: if true;
+      allow create: if isValidId(threadId) && isValidThread(request.resource.data);
+      allow update: if isValidId(threadId) && isValidThread(request.resource.data);
+      allow delete: if isAdmin();
+
+      // Ordered messages subcollection
+      match /messages/{messageId} {
+        allow read: if true;
+        allow create: if isValidId(messageId) && isValidMessage(request.resource.data);
+        allow update: if isValidId(messageId) && isValidMessage(request.resource.data);
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Webhook audit logs
+    match /webhook_logs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidLog(request.resource.data);
+      allow update: if isValidId(logId) && isValidLog(request.resource.data);
+      allow delete: if isAdmin();
+    }
+  }
+}
