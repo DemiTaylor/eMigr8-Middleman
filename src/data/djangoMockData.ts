@@ -1,0 +1,115 @@
+import { ChatThread, ChatMessage } from '../types/djangoChat';
+
+export const INITIAL_CHAT_THREADS: ChatThread[] = [
+  {
+    id: 2,
+    connectedNumber: 'telegramBot',
+    clientNumber: '123456789',
+    lastUpdate: 'Sept. 18, 2026, 11:54 a.m.',
+    incomingCount: 2,
+    outgoingCount: 3,
+    latestDirection: 'outgoing',
+    latestMessageSnippet: 'Hello, this is a final middleware test',
+    messagesCount: 5,
+    responseSettings: false, // Paused by admin
+    isSentStartMessage: false,
+    messages: [
+      {
+        id: 1,
+        chatId: 2,
+        direction: 'incoming',
+        sender: 'client',
+        senderLabel: 'Client (Telegram)',
+        phoneNumber: '123456789',
+        message: 'IP test',
+        timestamp: 'Sept. 18, 2026, 11:40 a.m.',
+      },
+      {
+        id: 2,
+        chatId: 2,
+        direction: 'outgoing',
+        sender: 'ai_bot',
+        senderLabel: 'AI Bot',
+        phoneNumber: 'telegramBot',
+        message: 'Hello, this is a final middleware test',
+        timestamp: 'Sept. 18, 2026, 11:41 a.m.',
+      },
+      {
+        id: 3,
+        chatId: 2,
+        direction: 'incoming',
+        sender: 'client',
+        senderLabel: 'Client (Telegram)',
+        phoneNumber: '123456789',
+        message: 'Can you tell me how many recommendation letters are needed?',
+        timestamp: 'Sept. 18, 2026, 11:45 a.m.',
+      },
+      {
+        id: 4,
+        chatId: 2,
+        direction: 'outgoing',
+        sender: 'ai_bot',
+        senderLabel: 'AI Bot',
+        phoneNumber: 'telegramBot',
+        message: 'You need between 4 to 5 letters of recommendation.',
+        timestamp: 'Sept. 18, 2026, 11:46 a.m.',
+      },
+      {
+        id: 5,
+        chatId: 2,
+        direction: 'outgoing',
+        sender: 'human_admin',
+        senderLabel: 'Admin (Interjected)',
+        phoneNumber: 'Admin Console',
+        message: 'Correction from Coach: You need exactly 3 letters of recommendation on company letterhead.',
+        timestamp: 'Sept. 18, 2026, 11:54 a.m.',
+        isInterjection: true,
+      }
+    ]
+  },
+  {
+    id: 1,
+    connectedNumber: 'WAWCD',
+    clientNumber: '+2348120493676',
+    lastUpdate: 'Sept. 14, 2026, midnight',
+    incomingCount: 2,
+    outgoingCount: 1,
+    latestDirection: 'incoming',
+    latestMessageSnippet: 'Can you help me with the visa requirements?',
+    messagesCount: 3,
+    responseSettings: true,
+    isSentStartMessage: false,
+    messages: [
+      {
+        id: 1,
+        chatId: 1,
+        direction: 'incoming',
+        sender: 'client',
+        senderLabel: 'Client (WhatsApp)',
+        phoneNumber: '+2348120493676',
+        message: 'Hello from WhatsApp',
+        timestamp: 'Sept. 13, 2026, 11:50 p.m.',
+      },
+      {
+        id: 2,
+        chatId: 1,
+        direction: 'outgoing',
+        sender: 'ai_bot',
+        senderLabel: 'AI Bot',
+        phoneNumber: 'WAWCD',
+        message: 'Hello! I am your AI assistant for tech visas. What route are you interested in?',
+        timestamp: 'Sept. 13, 2026, 11:51 p.m.',
+      },
+      {
+        id: 3,
+        chatId: 1,
+        direction: 'incoming',
+        sender: 'client',
+        senderLabel: 'Client (WhatsApp)',
+        phoneNumber: '+2348120493676',
+        message: 'Can you help me with the visa requirements?',
+        timestamp: 'Sept. 14, 2026, midnight',
+      }
+    ]
+  }
+];

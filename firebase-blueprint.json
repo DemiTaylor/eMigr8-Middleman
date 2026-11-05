@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "ChatThread": {
+      "title": "ChatThread",
+      "description": "Represents an applicant communication channel thread across WhatsApp or Telegram",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat thread"
+        },
+        "connectedNumber": {
+          "type": "string",
+          "description": "Communication channel name (WAWCD or telegramBot)",
+          "enum": ["WAWCD", "telegramBot"]
+        },
+        "clientNumber": {
+          "type": "string",
+          "description": "Phone number or username of the candidate"
+        },
+        "lastUpdate": {
+          "type": "string",
+          "description": "Formatted timestamp of the last message"
+        },
+        "incomingCount": {
+          "type": "number",
+          "description": "Total number of incoming messages from candidate"
+        },
+        "outgoingCount": {
+          "type": "number",
+          "description": "Total number of outgoing messages from AI or coach"
+        },
+        "latestDirection": {
+          "type": "string",
+          "description": "Direction of latest message",
+          "enum": ["incoming", "outgoing"]
+        },
+        "latestMessageSnippet": {
+          "type": "string",
+          "description": "Excerpt of latest message content",
+          "maxLength": 1000
+        },
+        "messagesCount": {
+          "type": "number",
+          "description": "Total message count in thread"
+        },
+        "responseSettings": {
+          "type": "boolean",
+          "description": "True if AI auto-replies, false if paused by human coach"
+        },
+        "isSentStartMessage": {
+          "type": "boolean",
+          "description": "Whether onboarding greeting was dispatched"
+        },
+        "hasWarningFlag": {
+          "type": "boolean",
+          "description": "Flag set when candidate needs human coach intervention"
+        },
+        "warningReason": {
+          "type": "string",
+          "description": "Description of why warning flag was raised"
+        }
+      },
+      "required": ["id", "connectedNumber", "clientNumber", "responseSettings"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A single inbound or outbound message belonging to a chat thread",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique message identifier"
+        },
+        "chatId": {
+          "type": "string",
+          "description": "Parent chat thread ID"
+        },
+        "direction": {
+          "type": "string",
+          "description": "Direction of transmission",
+          "enum": ["incoming", "outgoing"]
+        },
+        "sender": {
+          "type": "string",
+          "description": "Sender role type",
+          "enum": ["client", "ai_bot", "human_admin"]
+        },
+        "senderLabel": {
+          "type": "string",
+          "description": "Display label for sender"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Origin or recipient phone / channel"
+        },
+        "message": {
+          "type": "string",
+          "description": "Full message text content",
+          "maxLength": 10000
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Formatted time string"
+        },
+        "isInterjection": {
+          "type": "boolean",
+          "description": "Whether this message was a manual human coach override"
+        }
+      },
+      "required": ["id", "chatId", "direction", "sender", "message"]
+    },
+    "WebhookLog": {
+      "title": "WebhookLog",
+      "description": "Audit record of an inbound webhook hit",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique log entry ID"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Receipt timestamp"
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP method"
+        },
+        "path": {
+          "type": "string",
+          "description": "Endpoint URL path called"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Sender phone number extracted"
+        },
+        "messageSnippet": {
+          "type": "string",
+          "description": "Snippet of message payload"
+        },
+        "status": {
+          "type": "string",
+          "description": "Processing status"
+        },
+        "rawSnippet": {
+          "type": "string",
+          "description": "Raw payload snippet"
+        }
+      },
+      "required": ["id", "timestamp", "method", "path", "status"]
+    }
+  },
+  "firestore": {
+    "/chat_threads/{threadId}": {
+      "schema": "ChatThread",
+      "description": "Collection of active and historic candidate chat threads"
+    },
+    "/chat_threads/{threadId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Subcollection containing chronologically ordered messages in a chat thread"
+    },
+    "/webhook_logs/{logId}": {
+      "schema": "WebhookLog",
+      "description": "Recent incoming webhook transmission logs for diagnostics"
+    }
+  }
+}

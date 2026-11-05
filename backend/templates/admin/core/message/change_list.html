@@ -1,0 +1,75 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block content %}
+<div id="content-main">
+  {% if active_chat %}
+    <!-- Human Interjection Box (Replicating exact blue box from eMigr8 Django Admin Screenshot) -->
+    <div style="margin-bottom: 20px; padding: 18px; background-color: #141a24; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+      
+      <!-- Warning Alert Banner if AI was flagged on this chat -->
+      {% if active_chat.has_warning_flag %}
+        <div style="margin-bottom: 14px; padding: 12px; background-color: #450a0a; border: 1px solid #dc2626; border-radius: 6px; color: #fca5a5; font-size: 13px;">
+          <strong style="color: #f87171;">⚠️ CRITICAL POLICY INTERCEPTION ALERT:</strong>
+          <div>{{ active_chat.warning_note }}</div>
+          <small style="color: #cbd5e1; display: block; margin-top: 4px;">
+            Action: Send an authoritative correction below. Checking 'Automatically pause AI bot' will prevent the bot from contradicting your guidance.
+          </small>
+        </div>
+      {% endif %}
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="font-size: 14px; font-weight: bold; color: #f8fafc; font-family: monospace;">
+          Send to <span style="color: #2dd4bf;">{{ active_chat.client_number }}</span> via <span style="color: #60a5fa;">{{ active_chat.connected_number }}</span>
+        </div>
+
+        <div style="font-size: 12px; font-family: monospace;">
+          {% if active_chat.response_settings %}
+            <span style="background-color: #064e3b; color: #34d399; padding: 2px 8px; border-radius: 4px; border: 1px solid #059669;">
+              ● AI Auto-Reply Active
+            </span>
+          {% else %}
+            <span style="background-color: #450a0a; color: #f87171; padding: 2px 8px; border-radius: 4px; border: 1px solid #dc2626;">
+              ✖ AI Bot Paused (Human Takeover)
+            </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Interjection Form -->
+      <form method="post" action="">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="send_interjection" />
+        <input type="hidden" name="target_chat_id" value="{{ active_chat.pk }}" />
+
+        <div style="margin-bottom: 10px;">
+          <textarea 
+            name="interjection_text" 
+            placeholder="Type message to interject and send directly to applicant on WhatsApp/Telegram..." 
+            rows="4" 
+            style="width: 100%; box-sizing: border-box; background-color: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 10px; color: #f8fafc; font-size: 13px; font-family: sans-serif; resize: vertical;"
+            required
+          ></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <label style="font-size: 12px; color: #94a3b8; font-family: monospace; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="pause_ai" checked style="accent-color: #2dd4bf;" />
+            <span>Automatically pause AI bot auto-reply after interjecting</span>
+          </label>
+
+          <button 
+            type="submit" 
+            style="background-color: #2563eb; hover:background-color: #1d4ed8; color: #ffffff; border: none; padding: 8px 24px; border-radius: 6px; font-weight: bold; font-size: 13px; font-family: monospace; cursor: pointer; box-shadow: 0 2px 6px rgba(37,99,235,0.4);"
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </div>
+  {% endif %}
+
+  <!-- Standard Django Changelist (Search, Filter, Actions, Table) -->
+  {{ block.super }}
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{
+  "name": "eMigr8 Middleware Gateway",
+  "description": "Enterprise middleware and orchestration engine for the eMigr8 global tech talent mobility platform, powering visa route assessment, evidence processing, AI criteria evaluation, and webhook routing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

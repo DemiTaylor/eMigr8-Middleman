@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eMigr8 Middleware Gateway</title>
+    <meta name="description" content="Enterprise middleware and orchestration engine for the eMigr8 global tech talent mobility platform, powering visa route assessment, evidence processing, AI criteria evaluation, and webhook routing." />
+    <meta property="og:title" content="eMigr8 Middleware Gateway" />
+    <meta property="og:description" content="Enterprise middleware and orchestration engine for the eMigr8 global tech talent mobility platform, powering visa route assessment, evidence processing, AI criteria evaluation, and webhook routing." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      (function() {
+        // Intercept and neutralize third-party browser extension errors (e.g., MetaMask, Phantom, Coinbase)
+        function isExtensionError(eventOrError, extra) {
+          if (!eventOrError) return false;
+          var msg = '';
+          var stack = '';
+          var file = '';
+          
+          if (typeof eventOrError === 'string') {
+            msg = eventOrError;
+          } else {
+            msg = String(eventOrError.message || eventOrError.reason || eventOrError.type || '');
+            if (eventOrError.error) {
+              msg += ' ' + String(eventOrError.error.message || '');
+              stack = String(eventOrError.error.stack || '');
+            }
+            file = String(eventOrError.filename || '');
+          }
+          if (extra) {
+            stack += ' ' + String(extra);
+          }
+
+          var combined = (msg + ' ' + stack + ' ' + file).toLowerCase();
+
+          return (
+            combined.indexOf('metamask') !== -1 ||
+            combined.indexOf('failed to connect to metamask') !== -1 ||
+            combined.indexOf('chrome-extension://') !== -1 ||
+            combined.indexOf('moz-extension://') !== -1 ||
+            combined.indexOf('safari-extension://') !== -1 ||
+            combined.indexOf('inpage.js') !== -1
+          );
+        }
+
+        window.addEventListener('error', function(event) {
+          if (isExtensionError(event)) {
+            event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') {
+              event.stopImmediatePropagation();
+            }
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (isExtensionError(event && (event.reason || event))) {
+            event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') {
+              event.stopImmediatePropagation();
+            }
+            return true;
+          }
+        }, true);
+
+        var origOnError = window.onerror;
+        window.onerror = function(message, source, lineno, colno, error) {
+          if (isExtensionError(message, source) || isExtensionError(error, source)) {
+            return true;
+          }
+          if (typeof origOnError === 'function') {
+            return origOnError.apply(this, arguments);
+          }
+          return false;
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
